@@ -94,13 +94,33 @@ static void squadInfo(Squad squad){
         System.out.println("List of AllRounders:-");
         System.out.println("    "+squad.allRounders);
         System.out.println("Wicket Keeper Name:- "+squad.wicket_keeper_name);
+	System.out.println();
                                    }
-    public static void main(String[] args){
+ public static void main(String[] args){
+        icc = new International_Cricket();
+        Scanner scanner = new Scanner(System.in);
+        //players input
+        System.out.println("Enter no.of players in a squad");
+        int players = scanner.nextInt();
         Squad squad1=null,squad2 = null;
-        squad1 = squadFormation();
-        squad2 = squadFormation();
-        squadInfo(squad1);
-        squadInfo(squad2);
-                                          }
+        squad1 = icc.squadFormation(players);
+        squad2 = icc.squadFormation(players);
+	 
+	System.out.println("~~~~~~~~~~ Squad 1 ~~~~~~~~~~");
+        icc.squadInfo(squad1);
+        System.out.println("~~~~~~~~~~ Squad 2 ~~~~~~~~~~");
+        icc.squadInfo(squad2);
+
+        //overs input
+        System.out.println("Enter no.of overs");
+        int overs  = scanner.nextInt();
+        Match match = icc.matchInfo(overs,squad1,squad2);
+
+        //start the match
+        int target = icc.firstHalfMatch(match);
+        System.out.print(target);
+    }
 }
+
+
 
