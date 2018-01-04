@@ -1,5 +1,21 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+class Squad{
+    String country_name;
+    String captain_name;
+    ArrayList<String> players_list;
+    ArrayList<String> batsman,bowlers,allRounders;
+    String wicket_keeper_name;
+    public Squad(String country_name,String captain_name,ArrayList players_list,ArrayList batsman,ArrayList bowlers,ArrayList allRounders,String wicket_keeper_name){
+        this.country_name=country_name;
+        this.captain_name = captain_name;
+        this.players_list = players_list;
+        this.batsman = batsman;
+        this.bowlers = bowlers;
+        this.allRounders = allRounders;
+        this.wicket_keeper_name =   wicket_keeper_name;
+    }
+}
 public class International_Cricket {
     static void rulesAndRegulations(){
         System.out.println("Rules And Regulations:");
@@ -68,3 +84,23 @@ public class International_Cricket {
         System.out.println("~~~~~~~~~~ Congratulations..! Your Squad is successfully created..~~~~~~~~~~");
         return squad;
     }
+static void squadInfo(Squad squad){
+        System.out.println("Country Name:- "+squad.country_name);
+        System.out.println("Captain Name:- "+squad.captain_name);
+        System.out.println("List of Batsman:-");
+        System.out.println("    "+squad.batsman);
+        System.out.println("List of Bowlers:-");
+        System.out.println("    "+squad.bowlers);
+        System.out.println("List of AllRounders:-");
+        System.out.println("    "+squad.allRounders);
+        System.out.println("Wicket Keeper Name:- "+squad.wicket_keeper_name);
+                                   }
+    public static void main(String[] args){
+        Squad squad1=null,squad2 = null;
+        squad1 = squadFormation();
+        squad2 = squadFormation();
+        squadInfo(squad1);
+        squadInfo(squad2);
+                                          }
+}
+
