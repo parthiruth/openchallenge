@@ -1,5 +1,58 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
+
+class Players{
+    private String player_name,wicketType,status;
+    private int total_runs,wickets,fours,sixes;
+    public Players(String player_name){
+        this.player_name = player_name;
+        this.status="NotOut";
+        total_runs=0;
+        wickets=0;fours=0;
+        sixes=0;
+    }
+    //setter methods
+    public void setFours(){
+        this.fours = this.fours+1;
+    }
+    public void setSixes(){
+        this.sixes = this.sixes+1;
+    }
+    public void setWickets(){
+        this.wickets = this.wickets+1;
+    }
+    public void setTotalRuns(int run){
+        this.total_runs = run;
+    }
+    public void setWicketType(String wicketType){
+        this.wicketType = wicketType;
+        this.status="Out";
+    }
+
+    //getter methods
+    public int getFours(){
+        return this.fours;
+    }
+    public int getSixes(){
+        return this.sixes;
+    }
+    public int getWickets(){
+        return this.wickets;
+    }
+    public int getTotalRuns(){
+        return this.total_runs;
+    }
+    public String getWicketType(){
+        return this.wicketType;
+    }
+    public String getStatus(){
+        return this.status;
+    }
+
+}
+
 class Squad{
     String country_name;
     String captain_name;
