@@ -69,6 +69,24 @@ class Squad{
         this.wicket_keeper_name =   wicket_keeper_name;
     }
 }
+class Match{
+    Squad batting,bowling;
+    int overs;
+    int target;
+    public Match(Squad batting,Squad bowling,int overs){
+        this.batting = batting;
+        this.bowling = bowling;
+        this.overs = overs;
+    }
+    public Match(Squad batting,Squad bowling,int overs,int target){
+        this.batting = batting;
+        this.bowling = bowling;
+        this.overs = overs;
+        this.target = target;
+    }
+
+}
+
 public class International_Cricket {
     static void rulesAndRegulations(){
         System.out.println("Rules And Regulations:");
