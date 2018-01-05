@@ -1,21 +1,26 @@
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
+
 class Players{
     private String player_name,wicketType,status;
     private int total_runs,wickets,fours,sixes;
     public Players(String player_name){
         this.player_name = player_name;
         this.status="NotOut";
-        total_runs=0;
-        wickets=0;fours=0;
-        sixes=0;
-    } //setter methods
-    public void setFours()  {
-        this.fours = this.fours+1; }
-    public void setSixes() {
-        this.sixes = this.sixes+1; }
+        this.total_runs=0;
+        this.wickets=0;this.fours=0;
+        this.sixes=0;
+    }
+    //setter methods
+    public void setFours(){
+        this.fours = this.fours+1;
+    }
+    public void setSixes(){
+        this.sixes = this.sixes+1;
+    }
     public void setWickets(){
         this.wickets = this.wickets+1;
     }
@@ -52,7 +57,8 @@ class Squad{
     ArrayList<String> players_list;
     ArrayList<String> batsman,bowlers,allRounders;
     String wicket_keeper_name;
-    public Squad(String country_name,String captain_name,ArrayList players_list,ArrayList batsman,ArrayList bowlers,ArrayList allRounders,String wicket_keeper_name){
+    HashMap<String,Players> players_info;
+    public Squad(String country_name,String captain_name,ArrayList players_list,ArrayList batsman,ArrayList bowlers,ArrayList allRounders,String wicket_keeper_name,HashMap players_info){
         this.country_name=country_name;
         this.captain_name = captain_name;
         this.players_list = players_list;
@@ -60,18 +66,19 @@ class Squad{
         this.bowlers = bowlers;
         this.allRounders = allRounders;
         this.wicket_keeper_name =   wicket_keeper_name;
-	this.players_info = players_info;
+        this.players_info = players_info;
     }
 }
 class Match{
     Squad batting,bowling;
+    Squad Winning,Losing;
     int overs;
     int target;
     public Match(Squad batting,Squad bowling,int overs){
         this.batting = batting;
         this.bowling = bowling;
         this.overs = overs;
-	this.target=0;
+        this.target=0;
     }
     public Match(Squad batting,Squad bowling,int overs,int target){
         this.batting = batting;
@@ -85,7 +92,7 @@ class Match{
     }
 }
 public class International_Cricket {
-	 static International_Cricket icc;
+    static International_Cricket icc;
     private void rulesAndRegulations(){
         System.out.println("Rules And Regulations:");
         System.out.println("    1)No. of players in a Squad should be 11.\n    2)Captain name should start with a special character '*'\n    3)Batsman's name should ends with  'BA'\n    4)Bowler's name should ends with 'BO'\n    5)Wicket Keeper's name should ends with 'WC'\n    6)All Rounder name should ends with 'AL'");
@@ -100,22 +107,23 @@ public class International_Cricket {
         System.out.println("Enter country's name");
         String country = scanner.next();
         //playersList
+        HashMap<String,Players> players_info = new HashMap<String, Players>();
         System.out.println("Enter player's names:");
         String captain_name="",wicket_Keeper="";
-        ArrayList<String> players_list = createArrayList();
-        ArrayList<String> batsman = createArrayList();
-        ArrayList<String> bowlers = createArrayList();
-        ArrayList<String>allrounders = createArrayList();
+        ArrayList<String> players_list = icc.createArrayList();
+        ArrayList<String> batsman = icc.createArrayList();
+        ArrayList<String> bowlers = icc.createArrayList();
+        ArrayList<String>allrounders = icc.createArrayList();
         for(int i=1;i<=players;i++) {
             String name = scanner.next();
             String identity = name.substring(name.length()-2,name.length());
-			name = name.substring(0,name.length()-2);
+            name = name.substring(0,name.length()-2);
             //check captaincy
             if(name.startsWith("*")){
                 name = name.substring(1,name.length());
                 if(captain_name.equals("")){
                     captain_name = name+"*";
-                    players_list.add(captain_name);
+                    //players_list.add(captain_name);
                 }else {
                     System.out.println("*********OOPS..! More than one captain is not allowed...Please try again..*********");
                     i--;
@@ -125,14 +133,17 @@ public class International_Cricket {
                 case "BA":
                     batsman.add(name);
                     players_list.add(name);
+                    players_info.put(name,new Players(name));
                     break;
                 case "BO":
                     bowlers.add(name);
                     players_list.add(name);
+                    players_info.put(name,new Players(name));
                     break;
                 case "AL":
                     allrounders.add(name);
                     players_list.add(name);
+                    players_info.put(name,new Players(name));
                     break;
                 case "WC":
                     if(!wicket_Keeper.equals("")) {
@@ -142,6 +153,7 @@ public class International_Cricket {
                     else {
                         wicket_Keeper = name;
                         players_list.add(name);
+                        players_info.put(name,new Players(name));
                     }
                     break;
                 default:
@@ -149,11 +161,11 @@ public class International_Cricket {
                     i--;
             }
         }
-        Squad squad = new Squad(country,captain_name,players_list,batsman,bowlers,allrounders,wicket_Keeper);
+        Squad squad = new Squad(country,captain_name,players_list,batsman,bowlers,allrounders,wicket_Keeper,players_info);
         System.out.println("~~~~~~~~~~ Congratulations..! Your Squad is successfully created..~~~~~~~~~~");
         return squad;
     }
-static void squadInfo(Squad squad){
+    void squadInfo(Squad squad){
         System.out.println("Country Name:- "+squad.country_name);
         System.out.println("Captain Name:- "+squad.captain_name);
         System.out.println("List of Batsman:-");
@@ -163,16 +175,16 @@ static void squadInfo(Squad squad){
         System.out.println("List of AllRounders:-");
         System.out.println("    "+squad.allRounders);
         System.out.println("Wicket Keeper Name:- "+squad.wicket_keeper_name);
-	System.out.println();
-                                   }
-	void waitFor(int seconds){
+        System.out.println();
+    }
+    void waitFor(int seconds){
         try {
             Thread.sleep(seconds*1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-     int generateRandom(int num){
+    int generateRandom(int num){
         Random random = new Random();
         int n = random.nextInt(num);
         return n;
@@ -219,7 +231,7 @@ static void squadInfo(Squad squad){
         return arr;
     }
     String pollPlayers(ArrayList<String> bSquad){
-         if(bSquad.size()>0){
+        if(bSquad.size()>0){
             String name = bSquad.get(0);
             bSquad.remove(0);
             return name;
@@ -231,15 +243,15 @@ static void squadInfo(Squad squad){
         ArrayList<String> bowlingSquad = new ArrayList<String>();
         bowlingSquad.addAll(match.bowling.bowlers);
         bowlingSquad.addAll(match.bowling.allRounders);
-	int target = match.target;
+        int target = match.target;
         //match attributes
-            int overs = match.overs;
-            String batsman1 = icc.pollPlayers(battingSquad);
-            String batsman2 = icc.pollPlayers(battingSquad);
-            String bowler = icc.pollPlayers(bowlingSquad);
-            bowlingSquad.add(bowler);
-            int totalRuns=0,batsman1_runs=0,batsman2_runs=0;
-            int totalWickets=0;
+        int overs = match.overs;
+        String batsman1 = icc.pollPlayers(battingSquad);
+        String batsman2 = icc.pollPlayers(battingSquad);
+        String bowler = icc.pollPlayers(bowlingSquad);
+        bowlingSquad.add(bowler);
+        int totalRuns=0,batsman1_runs=0,batsman2_runs=0;
+        int totalWickets=0;
         //matchs= Scenario
         int[] status = {1,1,1,4,2,2,2,7,2,9,3,4,1,3,6,15,16,1,18,2,6,6,4,1,1,2};
         for(int i=0;i<overs&&totalWickets<match.bowling.players_list.size()-1;i++){
@@ -251,17 +263,20 @@ static void squadInfo(Squad squad){
                         players.setFours();
                         batsman1_runs+=status[random];
                         totalRuns = totalRuns+status[random];
+                        System.out.println(match.batting.country_name+"-->"+totalRuns+"-"+totalWickets+" Overs:-"+i+"."+ball+" "+batsman1+"-"+batsman1_runs+"  "+batsman2+"-"+batsman2_runs+" current Hit-"+status[random]);
                         break;
                     case 6:
                         Players players1 = match.batting.players_info.get(batsman1);
                         players1.setSixes();
                         batsman1_runs+=status[random];
                         totalRuns = totalRuns+status[random];
+                        System.out.println(match.batting.country_name+"-->"+totalRuns+"-"+totalWickets+" Overs:-"+i+"."+ball+" "+batsman1+"-"+batsman1_runs+"  "+batsman2+"-"+batsman2_runs+" current Hit-"+status[random]);
                         break;
                     case 1 :
                     case 3:
                         batsman1_runs+=status[random];
                         totalRuns = totalRuns+status[random];
+                        System.out.println(match.batting.country_name+"-->"+totalRuns+"-"+totalWickets+" Overs:-"+i+"."+ball+" "+batsman1+"-"+batsman1_runs+"  "+batsman2+"-"+batsman2_runs+" current Hit-"+status[random]);
                         int temp = batsman1_runs;
                         batsman1_runs = batsman2_runs;
                         batsman2_runs = temp;
@@ -272,6 +287,7 @@ static void squadInfo(Squad squad){
                     case 2:
                         batsman1_runs+=status[random];
                         totalRuns = totalRuns+status[random];
+                        System.out.println(match.batting.country_name+"-->"+totalRuns+"-"+totalWickets+" Overs:-"+i+"."+ball+" "+batsman1+"-"+batsman1_runs+"  "+batsman2+"-"+batsman2_runs+" current Hit-"+status[random]);
                         break;
                     case 7:
                     case 9:
@@ -280,13 +296,16 @@ static void squadInfo(Squad squad){
                         Players players2=match.batting.players_info.get(batsman1);
                         players2.setTotalRuns(batsman1_runs);
                         if(status[random]==7)
-                            players2.setWicketType("BoldOut by"+bowler);
+                            players2.setWicketType("BoldOut by "+bowler);
                         if(status[random]==9)
-                            players2.setWicketType("LBW by"+bowler);
+                            players2.setWicketType("LBW by "+bowler);
                         if(status[random]==15)
-                            players2.setWicketType("RunOut");
+                            players2.setWicketType("RunOut by " +match.bowling.wicket_keeper_name);
                         if(status[random]==18)
-                            players2.setWicketType("CatchOut"+bowler);
+                            players2.setWicketType("CatchOut "+bowler);
+                        System.out.println(match.batting.country_name+"-->"+totalRuns+"-"+totalWickets+" Overs:-"+i+"."+ball+" "+batsman1+"-"+batsman1_runs+"  "+batsman2+"-"+batsman2_runs+" current Hit-wicket");
+                        System.out.println("~~~~~~~~~~"+batsman1+" OUT ~~~~~~~~~~\n");
+                        System.out.println("~~~~~~~~~~Wicket type:- "+players2.getWicketType()+"~~~~~~~~~~\n");
                         batsman1=icc.pollPlayers(battingSquad);
                         batsman1_runs=0;
                         totalWickets++;
@@ -294,19 +313,19 @@ static void squadInfo(Squad squad){
                         players2.setWickets();
                         break;
                 }
-		     if(target>0&&target<=totalRuns){
+                if(target>0&&target<=totalRuns){
                     totalWickets=10;
                     break;
                 }
-                            }
+            }
             bowler = bowlingSquad.get(i%bowlingSquad.size());
         }
-         if (target==0)
+        if (target==0)
             return totalRuns+1;   //firstHalf result
         else
             return totalRuns;       //second half result
     }
-	 void scoreInfo(Squad squad){
+    void scoreInfo(Squad squad){
         System.out.println("\nCaptain Name:- "+squad.captain_name);
         System.out.println("\n~~~~~~~~~Score Details~~~~~~~~~\n");
         int i=1;
@@ -320,8 +339,7 @@ static void squadInfo(Squad squad){
             System.out.println("    Wicket by:- "+players.getWicketType());
         }
     }
-	
- public static void main(String[] args){
+    public static void main(String[] args){
         icc = new International_Cricket();
         Scanner scanner = new Scanner(System.in);
         //players input
@@ -330,7 +348,7 @@ static void squadInfo(Squad squad){
         Squad squad1=null,squad2 = null;
         squad1 = icc.squadFormation(players);
         squad2 = icc.squadFormation(players);
-	System.out.println("~~~~~~~~~~ Squad 1 ~~~~~~~~~~");
+        System.out.println("~~~~~~~~~~ Squad 1 ~~~~~~~~~~");
         icc.squadInfo(squad1);
         System.out.println("~~~~~~~~~~ Squad 2 ~~~~~~~~~~");
         icc.squadInfo(squad2);
@@ -351,15 +369,10 @@ static void squadInfo(Squad squad){
             System.out.println("\n~~~~~~~~" + match.bowling.country_name + " won the match ~~~~~~~~");
             match = new Match(match.bowling,match.batting);
         }
-
         System.out.println("\n~~~~~~~~Winning Squad - "+match.Winning.country_name +"~~~~~~~~");
         icc.scoreInfo(match.Winning);
         System.out.println();
         System.out.println("\n~~~~~~~~Losing Squad - "+match.Losing.country_name +"~~~~~~~~");
         icc.scoreInfo(match.Losing);
-
     }
 }
-
-
-
