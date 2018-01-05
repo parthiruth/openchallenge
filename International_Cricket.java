@@ -46,6 +46,23 @@ class Players{
         return this.status;
     }
 }
+class Squad{
+    String country_name;
+    String captain_name;
+    ArrayList<String> players_list;
+    ArrayList<String> batsman,bowlers,allRounders;
+    String wicket_keeper_name;
+    public Squad(String country_name,String captain_name,ArrayList players_list,ArrayList batsman,ArrayList bowlers,ArrayList allRounders,String wicket_keeper_name){
+        this.country_name=country_name;
+        this.captain_name = captain_name;
+        this.players_list = players_list;
+        this.batsman = batsman;
+        this.bowlers = bowlers;
+        this.allRounders = allRounders;
+        this.wicket_keeper_name =   wicket_keeper_name;
+	this.players_info = players_info;
+    }
+}
 class Match{
     Squad batting,bowling;
     int overs;
@@ -54,6 +71,7 @@ class Match{
         this.batting = batting;
         this.bowling = bowling;
         this.overs = overs;
+	this.target=0;
     }
     public Match(Squad batting,Squad bowling,int overs,int target){
         this.batting = batting;
@@ -61,18 +79,23 @@ class Match{
         this.overs = overs;
         this.target = target;
     }
+    public Match(Squad winning,Squad losing){
+        this.Winning = winning;
+        this.Losing = losing;
+    }
 }
 public class International_Cricket {
-    static void rulesAndRegulations(){
+	 static International_Cricket icc;
+    private void rulesAndRegulations(){
         System.out.println("Rules And Regulations:");
         System.out.println("    1)No. of players in a Squad should be 11.\n    2)Captain name should start with a special character '*'\n    3)Batsman's name should ends with  'BA'\n    4)Bowler's name should ends with 'BO'\n    5)Wicket Keeper's name should ends with 'WC'\n    6)All Rounder name should ends with 'AL'");
     }
-    static ArrayList createArrayList(){
+    private ArrayList createArrayList(){
         return new ArrayList<String>();
     }
-    static Squad squadFormation(){
+    private Squad squadFormation(int players){
         Scanner scanner  = new Scanner(System.in);
-        rulesAndRegulations();
+        icc.rulesAndRegulations();
         //country
         System.out.println("Enter country's name");
         String country = scanner.next();
@@ -83,7 +106,7 @@ public class International_Cricket {
         ArrayList<String> batsman = createArrayList();
         ArrayList<String> bowlers = createArrayList();
         ArrayList<String>allrounders = createArrayList();
-        for(int i=1;i<=5;i++) {
+        for(int i=1;i<=players;i++) {
             String name = scanner.next();
             String identity = name.substring(name.length()-2,name.length());
 			name = name.substring(0,name.length()-2);
@@ -196,9 +219,11 @@ static void squadInfo(Squad squad){
         return arr;
     }
     String pollPlayers(ArrayList<String> bSquad){
-        String name = bSquad.get(0);
-        bSquad.remove(0);
-        return name;
+         if(bSquad.size()>0){
+            String name = bSquad.get(0);
+            bSquad.remove(0);
+            return name;
+        }return "";
     }
     int firstHalfMatch(Match match){
         ArrayList<String> battingSquad ;
@@ -206,6 +231,7 @@ static void squadInfo(Squad squad){
         ArrayList<String> bowlingSquad = new ArrayList<String>();
         bowlingSquad.addAll(match.bowling.bowlers);
         bowlingSquad.addAll(match.bowling.allRounders);
+	int target = match.target;
         //match attributes
             int overs = match.overs;
             String batsman1 = icc.pollPlayers(battingSquad);
@@ -216,8 +242,8 @@ static void squadInfo(Squad squad){
             int totalWickets=0;
         //matchs= Scenario
         int[] status = {1,1,1,4,2,2,2,7,2,9,3,4,1,3,6,15,16,1,18,2,6,6,4,1,1,2};
-        for(int i=0;i<overs&&totalWickets<10;i++){
-            for(int ball=1;ball<=6&&totalWickets<10;ball++){
+        for(int i=0;i<overs&&totalWickets<match.bowling.players_list.size()-1;i++){
+            for(int ball=1;ball<=6&&totalWickets<match.bowling.players_list.size()-1;ball++){
                 int random = icc.generateRandom(26);
                 switch (status[random]){
                     case 4:
@@ -268,13 +294,33 @@ static void squadInfo(Squad squad){
                         players2.setWickets();
                         break;
                 }
-                System.out.println(match.batting.country_name+"-->"+totalRuns+"-"+totalWickets+" Overs:-"+i+"."+ball+" "+batsman1+"-"+batsman1_runs+"  "+batsman2+"-"+batsman2_runs);
-            }
+		     if(target>0&&target<=totalRuns){
+                    totalWickets=10;
+                    break;
+                }
+                            }
             bowler = bowlingSquad.get(i%bowlingSquad.size());
         }
-        match.target=totalRuns+1;
-        return totalRuns;
+         if (target==0)
+            return totalRuns+1;   //firstHalf result
+        else
+            return totalRuns;       //second half result
     }
+	 void scoreInfo(Squad squad){
+        System.out.println("\nCaptain Name:- "+squad.captain_name);
+        System.out.println("\n~~~~~~~~~Score Details~~~~~~~~~\n");
+        int i=1;
+        for(String s: squad.players_list){
+            Players players = squad.players_info.get(s);
+            System.out.println("\nPlayer "+s+"( "+players.getStatus()+" )");
+            System.out.println("    Total Runs:- "+players.getTotalRuns());
+            System.out.println("    No.of Fours:- "+players.getFours());
+            System.out.println("    No.of Sixes:- "+players.getSixes());
+            System.out.println("    No.of wickets:- "+players.getWickets());
+            System.out.println("    Wicket by:- "+players.getWicketType());
+        }
+    }
+	
  public static void main(String[] args){
         icc = new International_Cricket();
         Scanner scanner = new Scanner(System.in);
@@ -294,7 +340,24 @@ static void squadInfo(Squad squad){
         Match match = icc.matchInfo(overs,squad1,squad2);
         //start the match
         int target = icc.firstHalfMatch(match);
-        System.out.print(target);
+        System.out.println("\n~~~~~~~~ First Half Over ~~~~~~~~");
+        System.out.println("\n~~~~~~~~"+match.bowling.country_name+" needs "+target+" runs to win ~~~~~~~~\n");
+        match = new Match(match.bowling,match.batting,overs,target);
+        int secoundHalf = icc.firstHalfMatch(match);
+        if(secoundHalf>=target){
+            System.out.println("\n~~~~~~~~"+match.batting.country_name+" won the match ~~~~~~~~");
+            match = new Match(match.batting,match.bowling);
+        }else {
+            System.out.println("\n~~~~~~~~" + match.bowling.country_name + " won the match ~~~~~~~~");
+            match = new Match(match.bowling,match.batting);
+        }
+
+        System.out.println("\n~~~~~~~~Winning Squad - "+match.Winning.country_name +"~~~~~~~~");
+        icc.scoreInfo(match.Winning);
+        System.out.println();
+        System.out.println("\n~~~~~~~~Losing Squad - "+match.Losing.country_name +"~~~~~~~~");
+        icc.scoreInfo(match.Losing);
+
     }
 }
 
