@@ -46,22 +46,6 @@ class Players{
         return this.status;
     }
 }
-class Squad{
-    String country_name;
-    String captain_name;
-    ArrayList<String> players_list;
-    ArrayList<String> batsman,bowlers,allRounders;
-    String wicket_keeper_name;
-    public Squad(String country_name,String captain_name,ArrayList players_list,ArrayList batsman,ArrayList bowlers,ArrayList allRounders,String wicket_keeper_name){
-        this.country_name=country_name;
-        this.captain_name = captain_name;
-        this.players_list = players_list;
-        this.batsman = batsman;
-        this.bowlers = bowlers;
-        this.allRounders = allRounders;
-        this.wicket_keeper_name =   wicket_keeper_name;
-    }
-}
 class Match{
     Squad batting,bowling;
     int overs;
