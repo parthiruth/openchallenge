@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
-class Players{
+class Players{  // players details
     private String player_name,wicketType,status;
     private int total_runs,wickets,fours,sixes;
     public Players(String player_name){
@@ -15,43 +15,43 @@ class Players{
         this.sixes=0;
     }
     //setter methods
-    public void setFours(){
+    public void setFours(){        // player score the  runs only four
         this.fours = this.fours+1;
     }
     public void setSixes(){
-        this.sixes = this.sixes+1;
+        this.sixes = this.sixes+1;   // player score the  runs only six
     }
-    public void setWickets(){
+    public void setWickets(){         // player score the  how many wicket
         this.wickets = this.wickets+1;
     }
-    public void setTotalRuns(int run){
+    public void setTotalRuns(int run){  // player score the total runs in the match
         this.total_runs = run;
     }
     public void setWicketType(String wicketType){
-        this.wicketType = wicketType;
+        this.wicketType = wicketType;    // player wickettype e.g(runout,bold,catch)
         this.status="Out";
     }
     //getter methods
     public int getFours(){
-        return this.fours;
+        return this.fours;  // get the player score the  runs only four
     }
-    public int getSixes(){
+    public int getSixes(){  // get the  player score the  runs only six
         return this.sixes;
     }
     public int getWickets(){
-        return this.wickets;
+        return this.wickets;  // get the player score the  how many wicket
     }
     public int getTotalRuns(){
-        return this.total_runs;
+        return this.total_runs; // get the player score the total runs in the match
     }
     public String getWicketType(){
-        return this.wicketType;
+        return this.wicketType;    // get the player wickettype e.g(runout,bold,catch)
     }
     public String getStatus(){
-        return this.status;
+        return this.status;   // out or notout
     }
 }
-class Squad{
+class Squad{   //team detils
     String country_name;
     String captain_name;
     ArrayList<String> players_list;
@@ -69,12 +69,12 @@ class Squad{
         this.players_info = players_info;
     }
 }
-class Match{
+class Match{   //match details
     Squad batting,bowling;
     Squad Winning,Losing;
     int overs;
     int target;
-    public Match(Squad batting,Squad bowling,int overs){
+    public Match(Squad batting,Squad bowling,int overs){  
         this.batting = batting;
         this.bowling = bowling;
         this.overs = overs;
@@ -93,14 +93,14 @@ class Match{
 }
 public class International_Cricket {
     static International_Cricket icc;
-    private void rulesAndRegulations(){
+    private void rulesAndRegulations(){  // instruct the game details
         System.out.println("Rules And Regulations:");
         System.out.println("    1)No. of players in a Squad should be 11.\n    2)Captain name should start with a special character '*'\n    3)Batsman's name should ends with  'BA'\n    4)Bowler's name should ends with 'BO'\n    5)Wicket Keeper's name should ends with 'WC'\n    6)All Rounder name should ends with 'AL'");
     }
     private ArrayList createArrayList(){
         return new ArrayList<String>();
     }
-    private Squad squadFormation(int players){
+    private Squad squadFormation(int players){    // team formation in the match
         Scanner scanner  = new Scanner(System.in);
         icc.rulesAndRegulations();
         //country
@@ -130,22 +130,22 @@ public class International_Cricket {
                 }
             }
             switch (identity){
-                case "BA":
+                case "BA":      // select the batsman
                     batsman.add(name);
                     players_list.add(name);
                     players_info.put(name,new Players(name));
                     break;
-                case "BO":
+                case "BO":    //select the bowlers
                     bowlers.add(name);
                     players_list.add(name);
                     players_info.put(name,new Players(name));
                     break;
-                case "AL":
+                case "AL":    //select the allrounders
                     allrounders.add(name);
                     players_list.add(name);
                     players_info.put(name,new Players(name));
                     break;
-                case "WC":
+                case "WC":     //select the wicketkeeper
                     if(!wicket_Keeper.equals("")) {
                         System.out.println("********* OOPS..! you've already entered wicketKeeprs name...Please try again..*********");
                         i--;
@@ -165,7 +165,7 @@ public class International_Cricket {
         System.out.println("~~~~~~~~~~ Congratulations..! Your Squad is successfully created..~~~~~~~~~~");
         return squad;
     }
-    void squadInfo(Squad squad){
+    void squadInfo(Squad squad){   //position of the team players
         System.out.println("Country Name:- "+squad.country_name);
         System.out.println("Captain Name:- "+squad.captain_name);
         System.out.println("List of Batsman:-");
@@ -189,7 +189,7 @@ public class International_Cricket {
         int n = random.nextInt(num);
         return n;
     }
-    Match matchInfo(int overs,Squad squad1,Squad squad2){
+    Match matchInfo(int overs,Squad squad1,Squad squad2){ //details of the match
         System.out.println("Its Time for tossing\n");
         Squad[] squads = new Squad[2];
         squads[0]=squad1;
@@ -222,7 +222,7 @@ public class International_Cricket {
         Match match = new Match(squads[winner],squads[(winner+1)%2],overs);
         return match;
     }
-    ArrayList prioritizePlayers(ArrayList one,ArrayList two,ArrayList three,String wc){
+    ArrayList prioritizePlayers(ArrayList one,ArrayList two,ArrayList three,String wc){ //players play priority wise
         ArrayList<String> arr = new ArrayList<String>();
         arr.addAll(one);
         arr.addAll(two);
@@ -325,7 +325,7 @@ public class International_Cricket {
         else
             return totalRuns;       //second half result
     }
-    void scoreInfo(Squad squad){
+    void scoreInfo(Squad squad){   //finaly team details
         System.out.println("\nCaptain Name:- "+squad.captain_name);
         System.out.println("\n~~~~~~~~~Score Details~~~~~~~~~\n");
         int i=1;
